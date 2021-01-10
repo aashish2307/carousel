@@ -39,7 +39,6 @@ export const Icon = styled.i`
   transform: ${(props) => (props.left ? "rotate(135deg)" : "rotate(-45deg)")};
 `;
 export const Carousel = styled.div`
-  margin-top: 10%;
   align-items: center;
   display: flex;
   flex: 1;
@@ -93,4 +92,17 @@ export const Image = styled.img`
   &:hover {
     transform: scale(1.3);
   }
+`;
+export const Select = styled.select`
+  padding: 10px;
+`;
+export const CategoriesWrapper = styled.div`
+  margin: 0 auto;
+  display: flex;
+  margin-top: 100px;
+  justify-content: center;
+  align-items: center;
+`;
+export const H2 = styled.h2`
+  padding: 10px;
 `;

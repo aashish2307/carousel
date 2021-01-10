@@ -13,22 +13,21 @@ import {
   P,
   CarouselImage,
   Image,
+  Select,
+  CategoriesWrapper,
+  H2,
 } from "./styledComponent";
-import { sleep } from "./utils";
+import { sleep, onlyUnique } from "./utils";
 
-const slideWidth = 30;
-
-const _items = data;
-const length = _items.length;
-
-const createItem = (position, idx) => {
+const createItem = (position, idx, items) => {
+  const slideWidth = 30;
   const item = {
     styles: {
       transform: `translateX(${position * slideWidth}rem)`,
     },
-    data: _items[idx],
+    data: items[idx],
   };
-
+  const { length } = items;
   switch (position) {
     case length - 1:
     case length + 1:
@@ -46,8 +45,8 @@ const createItem = (position, idx) => {
   return item;
 };
 
-const CarouselSlideItem = ({ pos, idx }) => {
-  const item = createItem(pos, idx);
+const CarouselSlideItem = ({ pos, idx, items }) => {
+  const item = createItem(pos, idx, items);
 
   return (
     <CarouselItem style={item.styles}>
@@ -63,12 +62,14 @@ const CarouselSlideItem = ({ pos, idx }) => {
   );
 };
 
-const keys = Array.from(Array(_items.length).keys());
-
 function App() {
+  const _items = data;
+  const keys = Array.from(Array(_items.length).keys());
   const [items, setItems] = React.useState(keys);
   const [isTicking, setIsTicking] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] = React.useState(false);
   const bigLength = items.length;
+  const categories = _items.map((item) => item.category).filter(onlyUnique);
 
   const prevClick = (jump = 1) => {
     if (!isTicking) {
@@ -77,6 +78,10 @@ function App() {
         return prev.map((_, i) => prev[(i + jump) % bigLength]);
       });
     }
+  };
+
+  const onCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
   };
 
   const nextClick = (jump = 1) => {
@@ -93,21 +98,32 @@ function App() {
   }, [isTicking]);
 
   return (
-    <Carousel>
-      <CarouselBtn left={true} onClick={() => prevClick()}>
-        <Icon left={true}></Icon>
-      </CarouselBtn>
-      <CarouselContainer>
-        <CarouselList>
-          {items.map((pos, i) => (
-            <CarouselSlideItem key={i} idx={i} pos={pos} />
+    <React.Fragment>
+      <CategoriesWrapper>
+        <H2>Select Categories</H2>
+        <Select onChange={onCategoryChange} value={selectedCategory}>
+          <option>All Category</option>
+          {categories.map((category, key) => (
+            <option key={key}>{category}</option>
           ))}
-        </CarouselList>
-      </CarouselContainer>
-      <CarouselBtn right={true} onClick={() => nextClick()}>
-        <Icon right={true}></Icon>
-      </CarouselBtn>
-    </Carousel>
+        </Select>
+      </CategoriesWrapper>
+      <Carousel>
+        <CarouselBtn left={true} onClick={() => prevClick()}>
+          <Icon left={true}></Icon>
+        </CarouselBtn>
+        <CarouselContainer>
+          <CarouselList>
+            {items.map((pos, i) => (
+              <CarouselSlideItem key={i} idx={i} pos={pos} items={_items} />
+            ))}
+          </CarouselList>
+        </CarouselContainer>
+        <CarouselBtn right={true} onClick={() => nextClick()}>
+          <Icon right={true}></Icon>
+        </CarouselBtn>
+      </Carousel>
+    </React.Fragment>
   );
 }
 
