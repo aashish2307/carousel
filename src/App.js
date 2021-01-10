@@ -27,21 +27,6 @@ const createItem = (position, idx, items) => {
     },
     data: items[idx],
   };
-  const { length } = items;
-  switch (position) {
-    case length - 1:
-    case length + 1:
-      item.styles = { ...item.styles, filter: "grayscale(1)" };
-      break;
-    case length:
-      item.styles = { ...item.styles };
-      break;
-    default:
-      item.styles = { ...item.styles };
-      // item.styles = { ...item.styles, opacity: 0 }
-      break;
-  }
-
   return item;
 };
 
